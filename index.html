@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Choudhry Tanzeel — Data Engineer</title>
-<meta name="description" content="Data Engineer building ETL and ELT pipelines with Python, SQL, Spark, Databricks and AWS.">
+<meta name="description" content="Data Engineer building ETL and ELT pipelines with Python, SQL, Spark, Databricks, Airflow, dbt and AWS.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230A0E12'/%3E%3Ccircle cx='9' cy='22' r='4' fill='%23C97B4A'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%239FB3C2'/%3E%3Ccircle cx='23' cy='10' r='4' fill='%23E0A940'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -371,9 +371,10 @@
   .tl-desc { margin-top: 10px; color: var(--text-dim); max-width: 56ch; font-size: 0.97rem; }
 
   /* ---------- featured project (run-log treatment, not a card grid) ---------- */
+  .project-list { display: flex; flex-direction: column; gap: 28px; }
   .project {
     border: 1px solid var(--line);
-    border-radius: 4px;
+    border-radius: 16px;
     background: var(--surface);
     overflow: hidden;
   }
@@ -409,7 +410,11 @@
   }
   .metric .l { font-size: 12px; color: var(--text-faint); margin-top: 4px; }
 
-  .project-chart { padding: 22px 24px 0; }
+  .project-chart { padding: 22px 24px 0; margin: 0; }
+  @media (max-width: 560px) {
+    .project-chart { padding: 18px 14px 0; }
+    .chart-card { padding: 16px 14px 14px; }
+  }
   .project-chart img {
     border: 1px solid var(--line);
     border-radius: 3px;
@@ -457,6 +462,87 @@
     font-size: 12.5px;
     color: var(--text-faint);
   }
+
+  .project-title {
+    font-size: clamp(1.35rem, 2.6vw, 1.7rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+  .project-name { font-size: 0.95rem; color: var(--text-dim); }
+  .project-findings {
+    list-style: none;
+    margin: 0;
+    padding: 20px 24px 0;
+    display: grid;
+    gap: 12px;
+  }
+  .project-findings li {
+    position: relative;
+    padding-left: 18px;
+    color: var(--text-dim);
+    max-width: 70ch;
+  }
+  .project-findings li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0.62em;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--gold);
+  }
+  .project-findings strong { color: var(--text); font-weight: 600; }
+  .data-note {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--text-faint);
+  }
+
+  /* ---------- air quality line chart ---------- */
+  #air-quality-pipeline .chart-card { position: relative; }
+  .aq-chart { position: relative; margin-top: 14px; overflow-x: auto; border-radius: 6px; }
+  .aq-chart:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+  .aq-chart svg { width: 100%; height: auto; min-width: 560px; display: block; }
+  .aq-line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .aq-band { fill: rgba(230,234,238,0.045); }
+  .aq-cross { stroke: var(--text-faint); stroke-width: 1; }
+  .aq-endlabel { font-family: var(--font-mono); font-size: 10.5px; fill: var(--text-dim); }
+  .aq-legend {
+    display: flex; flex-wrap: wrap; gap: 8px 18px;
+    margin-top: 14px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .aq-legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .aq-key { width: 16px; height: 2px; border-radius: 1px; display: inline-block; }
+  .aq-key-band { width: 14px; height: 10px; border-radius: 2px; background: rgba(230,234,238,0.12); display: inline-block; }
+  .aq-tip {
+    position: absolute;
+    top: 8px;
+    min-width: 168px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 12px;
+    pointer-events: none;
+    z-index: 6;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .aq-tip-month { color: var(--text-dim); margin-bottom: 6px; }
+  .aq-tip-row { display: grid; grid-template-columns: 14px 1fr auto; align-items: center; gap: 8px; line-height: 1.7; }
+  .aq-tip-row .k { height: 2px; border-radius: 1px; }
+  .aq-tip-row .n { color: var(--text-faint); }
+  .aq-tip-row .v { color: var(--text); font-weight: 500; text-align: right; font-variant-numeric: tabular-nums; }
+  .aq-table { margin-top: 14px; font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); }
+  .aq-table summary { cursor: pointer; color: var(--text-dim); }
+  .aq-table summary:hover { color: var(--gold); }
+  .aq-table-scroll { max-height: 280px; overflow: auto; margin-top: 10px; border: 1px solid var(--line); border-radius: 8px; }
+  .aq-table table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+  .aq-table th, .aq-table td { padding: 5px 10px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  .aq-table th:first-child, .aq-table td:first-child { text-align: left; }
+  .aq-table thead th { position: sticky; top: 0; background: var(--surface-2); color: var(--text); font-weight: 500; }
 
   /* ---------- freelance status block ---------- */
   .status-block {
@@ -788,6 +874,8 @@
           <span class="stack-num" aria-hidden="true">04</span>
           <div class="role">orchestrate &amp; ops</div>
           <ul>
+            <li>Airflow</li>
+            <li>Docker</li>
             <li>AWS</li>
             <li>Git</li>
             <li>CI/CD</li>
@@ -836,14 +924,71 @@
     <div class="wrap-wide">
       <div class="section-head">
         <div class="tag">featured work</div>
-        <h2>flight-lakehouse</h2>
-        <p>A medallion pipeline on PySpark and Delta Lake, with a data quality quarantine, a row-count reconciliation gate, and tests that run in CI on both Parquet and Delta.</p>
+        <h2>Pipelines I've built and run end to end</h2>
+        <p>Each repo comes with tests, CI and the numbers from real runs, including what the data quality checks caught.</p>
       </div>
 
-      <div class="project">
+      <div class="project-list">
+
+      <article class="project" id="air-quality-pipeline">
         <div class="project-head">
+          <h3 class="project-title">air-quality-pipeline</h3>
+          <div class="project-name"><a href="https://github.com/chtanzeel/air-quality-pipeline" target="_blank" rel="noopener">github.com/chtanzeel/air-quality-pipeline</a></div>
+          <p class="project-desc">Hourly air quality data for Lahore, Faisalabad, Islamabad, Peshawar and Karachi, pulled from a public API every day and loaded <strong>incrementally</strong> into Postgres using watermarks. Modelled and tested with dbt, scheduled by Airflow, and started with one <code>docker compose up</code>.</p>
+        </div>
+
+        <div class="project-metrics">
+          <div class="metric"><div class="v"><span class="countup" data-target="183920" data-comma="1">0</span></div><div class="l">hourly rows backfilled, Aug 2022 to Oct 2026</div></div>
+          <div class="metric"><div class="v">3m 44s</div><div class="l">full backfill in Airflow, 250 API calls</div></div>
+          <div class="metric"><div class="v"><span class="countup" data-target="561">0</span></div><div class="l">rows quarantined (0.31%), with reasons</div></div>
+          <div class="metric"><div class="v">0</div><div class="l">rows changed when a loaded window is re-run</div></div>
+        </div>
+
+        <figure class="project-chart">
+          <div class="chart-card">
+            <div class="chart-head">
+              <h3>Monthly mean PM2.5 by city, August 2022 to October 2026</h3>
+              <p>µg/m³. Shaded bands are smog seasons (1 Oct to 31 Jan). Point at or arrow through the chart for each month.</p>
+            </div>
+            <div id="aqChart" class="aq-chart" tabindex="0" role="img" aria-label="Line chart of monthly mean PM2.5 for five Pakistani cities. Every winter the Punjab cities spike: Faisalabad peaks at 176 micrograms per cubic metre in January 2024 and January 2026, Lahore at 152 in January 2026. Karachi stays lowest, between 17 and 63."></div>
+            <div class="aq-tip" id="aqTip" hidden></div>
+            <div class="aq-legend" id="aqLegend"></div>
+            <details class="aq-table">
+              <summary>Show the data as a table</summary>
+              <div class="aq-table-scroll"><table id="aqTable"></table></div>
+            </details>
+            <p class="data-note" style="margin-top:12px;">CAMS atmospheric model data on a ~45 km grid via Open-Meteo, not ground-station readings. October 2026 is a partial month.</p>
+          </div>
+        </figure>
+
+        <ul class="project-findings">
+          <li><strong>Faisalabad has overtaken Lahore.</strong> Its smog-season mean PM2.5 rose three seasons running, from 116.3 to 136.2 µg/m³, while Lahore stayed around 110.</li>
+          <li><strong>Lahore's worst week was 13 to 19 January 2026,</strong> with a 7-day mean of 219 µg/m³, about 15 times the WHO 24-hour guideline.</li>
+          <li><strong>The checks caught an upstream outage.</strong> For 60 hours in December 2022 all five cities read near zero at once. Those rows are quarantined, and a dbt test now fails the build if an unreviewed outage like it appears again.</li>
+        </ul>
+
+        <div class="project-stack">
+          <span>Airflow 3</span>
+          <span>dbt</span>
+          <span>PostgreSQL</span>
+          <span>Docker Compose</span>
+          <span>Python</span>
+          <span>pytest</span>
+          <span>GitHub Actions</span>
+        </div>
+
+        <div class="project-links">
+          <a href="https://github.com/chtanzeel/air-quality-pipeline" target="_blank" rel="noopener">View repository</a>
+          <a href="https://github.com/chtanzeel/air-quality-pipeline/blob/main/README.md" target="_blank" rel="noopener">Read the README</a>
+          <a href="https://github.com/chtanzeel/air-quality-pipeline/blob/main/docs/run_notes.md" target="_blank" rel="noopener">Run notes</a>
+        </div>
+      </article>
+
+      <article class="project" id="flight-lakehouse">
+        <div class="project-head">
+          <h3 class="project-title">flight-lakehouse</h3>
           <div class="project-name"><a href="https://github.com/chtanzeel/flight-lakehouse" target="_blank" rel="noopener">github.com/chtanzeel/flight-lakehouse</a></div>
-          <p class="project-desc">3 million public flight records move through bronze, silver and gold Delta Lake tables. Bad rows are quarantined with the exact rule they broke, not dropped. Every run is logged, and re-running produces the same tables.</p>
+          <p class="project-desc">A medallion pipeline on <strong>PySpark and Delta Lake</strong>. 3 million public flight records move through bronze, silver and gold tables. Bad rows are quarantined with the exact rule they broke, not dropped, a reconciliation gate stops silent data loss, and the tests run in CI on both Parquet and Delta.</p>
         </div>
 
         <div class="project-metrics">
@@ -883,8 +1028,8 @@
           <a href="https://github.com/chtanzeel/flight-lakehouse/blob/main/README.md" target="_blank" rel="noopener">Read the README</a>
           <a href="https://github.com/chtanzeel/flight-lakehouse/blob/main/docs/databricks-aws.md" target="_blank" rel="noopener">Databricks &amp; AWS deployment guide</a>
         </div>
+      </article>
 
-        <div class="project-next">next up: an API-to-warehouse pipeline with scheduled orchestration — in progress</div>
       </div>
     </div>
   </section>
@@ -1180,6 +1325,279 @@
       bar.addEventListener("focus", function () { showChartTip(bar); });
       bar.addEventListener("blur", function () { hideChartTip(bar); });
     });
+  }
+
+  /* ---------- air quality line chart (data: docs/portfolio_stats.json in air-quality-pipeline) ---------- */
+  var AQ_SERIES = [
+    { name: "Lahore",     color: "#3987e5" },
+    { name: "Faisalabad", color: "#d95926" },
+    { name: "Islamabad",  color: "#199e70" },
+    { name: "Peshawar",   color: "#c98500" },
+    { name: "Karachi",    color: "#d55181" }
+  ];
+  var AQ_MONTHLY = [
+    ["2022-08", 46.4, 39.9, 36.0, 36.9, 33.9],
+    ["2022-09", 67.7, 51.8, 48.9, 51.0, 27.7],
+    ["2022-10", 102.9, 78.5, 42.7, 44.3, 37.1],
+    ["2022-11", 103.5, 80.5, 43.8, 42.8, 49.3],
+    ["2022-12", 134.8, 111.9, 55.6, 48.6, 63.2],
+    ["2023-01", 131.2, 109.7, 59.4, 49.1, 52.4],
+    ["2023-02", 76.4, 68.4, 49.8, 44.9, 50.5],
+    ["2023-03", 64.6, 46.7, 36.7, 36.8, 47.2],
+    ["2023-04", 43.5, 37.3, 26.4, 29.9, 24.0],
+    ["2023-05", 41.9, 36.9, 28.7, 30.6, 18.2],
+    ["2023-06", 52.3, 41.0, 34.2, 33.1, 21.2],
+    ["2023-07", 44.3, 47.4, 37.5, 31.2, 26.1],
+    ["2023-08", 57.2, 54.7, 43.0, 38.1, 18.4],
+    ["2023-09", 46.8, 44.1, 34.6, 29.7, 25.3],
+    ["2023-10", 59.7, 67.5, 26.7, 25.8, 26.9],
+    ["2023-11", 83.7, 96.4, 30.7, 30.3, 49.2],
+    ["2023-12", 108.8, 124.5, 36.9, 38.3, 34.1],
+    ["2024-01", 149.6, 176.2, 66.5, 58.7, 43.7],
+    ["2024-02", 63.0, 70.1, 32.2, 29.2, 28.3],
+    ["2024-03", 42.9, 44.8, 27.4, 23.1, 25.3],
+    ["2024-04", 31.3, 33.1, 21.7, 20.4, 20.8],
+    ["2024-05", 36.4, 38.3, 19.6, 17.7, 17.3],
+    ["2024-06", 41.7, 46.4, 29.4, 22.2, 21.9],
+    ["2024-07", 57.5, 63.5, 47.0, 41.5, 30.0],
+    ["2024-08", 36.5, 40.9, 31.0, 28.9, 19.9],
+    ["2024-09", 51.7, 54.0, 35.6, 29.6, 19.7],
+    ["2024-10", 66.8, 69.1, 33.7, 30.3, 24.4],
+    ["2024-11", 124.9, 136.5, 50.7, 47.6, 30.5],
+    ["2024-12", 116.4, 158.4, 53.9, 52.4, 39.1],
+    ["2025-01", 128.3, 155.1, 49.9, 52.4, 40.5],
+    ["2025-02", 71.3, 80.2, 32.9, 33.8, 29.5],
+    ["2025-03", 38.1, 48.5, 24.5, 29.6, 22.3],
+    ["2025-04", 39.5, 45.2, 22.6, 23.9, 23.1],
+    ["2025-05", 59.4, 60.7, 35.0, 34.4, 24.5],
+    ["2025-06", 54.4, 57.5, 39.3, 37.6, 26.6],
+    ["2025-07", 52.8, 54.8, 40.2, 45.3, 27.1],
+    ["2025-08", 47.4, 47.9, 39.1, 38.0, 24.1],
+    ["2025-09", 40.9, 40.6, 36.1, 36.2, 23.0],
+    ["2025-10", 70.0, 84.3, 33.0, 33.8, 31.1],
+    ["2025-11", 100.5, 130.1, 50.4, 43.8, 40.5],
+    ["2025-12", 121.3, 153.9, 60.3, 57.6, 37.8],
+    ["2026-01", 151.5, 176.2, 56.6, 58.0, 36.4],
+    ["2026-02", 81.0, 98.1, 38.3, 40.3, 33.4],
+    ["2026-03", 45.3, 60.3, 29.6, 30.6, 25.4],
+    ["2026-04", 27.7, 40.8, 21.4, 24.2, 24.0],
+    ["2026-05", 45.5, 53.1, 29.5, 28.8, 25.2],
+    ["2026-06", 54.7, 61.3, 31.8, 38.9, 23.5],
+    ["2026-07", 66.5, 67.0, 40.2, 43.3, 24.8],
+    ["2026-08", 58.9, 60.5, 41.4, 46.8, 21.9],
+    ["2026-09", 61.5, 70.7, 46.3, 46.4, 22.5],
+    ["2026-10", 61.6, 67.6, 40.4, 40.1, 24.1]
+  ];
+  var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  function monthLabel(ym) {
+    var p = ym.split("-");
+    return MONTHS[parseInt(p[1], 10) - 1] + " " + p[0];
+  }
+
+  var aqBox = document.getElementById("aqChart");
+  var aqTip = document.getElementById("aqTip");
+  if (aqBox && aqTip) {
+    var NS = "http://www.w3.org/2000/svg";
+    var AW = 920, AH = 330;
+    var aL = 40, aR = 92, aT = 14, aB = 30;
+    var pw = AW - aL - aR, ph = AH - aT - aB;
+    var yMax = 200;
+    var n = AQ_MONTHLY.length;
+    function ax(i) { return aL + (i / (n - 1)) * pw; }
+    function ay(v) { return aT + ph - (v / yMax) * ph; }
+    function el(tag, attrs) {
+      var e = document.createElementNS(NS, tag);
+      for (var k in attrs) e.setAttribute(k, attrs[k]);
+      return e;
+    }
+
+    var asvg = el("svg", { viewBox: "0 0 " + AW + " " + AH, role: "presentation" });
+    var step = pw / (n - 1);
+
+    // smog season bands: Oct..Jan
+    var bandStart = null;
+    AQ_MONTHLY.forEach(function (row, i) {
+      var m = parseInt(row[0].split("-")[1], 10);
+      var inSeason = m >= 10 || m === 1;
+      if (inSeason && bandStart === null) bandStart = i;
+      var last = i === n - 1;
+      if (bandStart !== null && (!inSeason || last)) {
+        var endIdx = inSeason ? i : i - 1;
+        var x0 = Math.max(aL, ax(bandStart) - step / 2);
+        var x1 = Math.min(aL + pw, ax(endIdx) + step / 2);
+        asvg.appendChild(el("rect", { x: x0, y: aT, width: x1 - x0, height: ph, class: "aq-band" }));
+        bandStart = null;
+      }
+    });
+
+    // gridlines + y labels
+    [0, 50, 100, 150, 200].forEach(function (g) {
+      var y = ay(g);
+      asvg.appendChild(el("line", { x1: aL, x2: aL + pw, y1: y, y2: y, class: "chart-grid-line" }));
+      var t = el("text", { x: aL - 8, y: y + 3, "text-anchor": "end", class: "chart-axis-label" });
+      t.textContent = g;
+      asvg.appendChild(t);
+    });
+
+    // x labels: each January (the title gives the full date range)
+    AQ_MONTHLY.forEach(function (row, i) {
+      if (row[0].split("-")[1] === "01") {
+        var t = el("text", { x: ax(i), y: AH - aB + 18, "text-anchor": "middle", class: "chart-axis-label" });
+        t.textContent = "Jan " + row[0].split("-")[0];
+        asvg.appendChild(t);
+      }
+    });
+
+    // lines, end markers, direct labels
+    var ends = [];
+    AQ_SERIES.forEach(function (s, si) {
+      var d = AQ_MONTHLY.map(function (row, i) {
+        return (i ? "L" : "M") + ax(i).toFixed(1) + " " + ay(row[si + 1]).toFixed(1);
+      }).join(" ");
+      asvg.appendChild(el("path", { d: d, class: "aq-line", stroke: s.color }));
+      var lastV = AQ_MONTHLY[n - 1][si + 1];
+      asvg.appendChild(el("circle", { cx: ax(n - 1), cy: ay(lastV), r: 4, fill: s.color, stroke: "#161C23", "stroke-width": 2 }));
+      ends.push({ s: s, y: ay(lastV) });
+    });
+    // spread end labels so they never overlap (min 13px apart, kept inside the plot)
+    ends.sort(function (a, b) { return a.y - b.y; });
+    for (var it = 0; it < 20; it++) {
+      for (var j = 1; j < ends.length; j++) {
+        var gap = ends[j].y - ends[j - 1].y;
+        if (gap < 13) {
+          var push = (13 - gap) / 2;
+          ends[j - 1].y -= push;
+          ends[j].y += push;
+        }
+      }
+      ends.forEach(function (e) { e.y = Math.max(aT + 6, Math.min(aT + ph, e.y)); });
+    }
+    ends.forEach(function (e) {
+      var lx = ax(n - 1) + 10;
+      asvg.appendChild(el("line", { x1: lx, x2: lx + 8, y1: e.y, y2: e.y, stroke: e.s.color, "stroke-width": 2, "stroke-linecap": "round" }));
+      var t = el("text", { x: lx + 12, y: e.y + 3.5, class: "aq-endlabel" });
+      t.textContent = e.s.name;
+      asvg.appendChild(t);
+    });
+
+    // hover layer: crosshair + dots
+    var cross = el("line", { y1: aT, y2: aT + ph, class: "aq-cross", visibility: "hidden" });
+    asvg.appendChild(cross);
+    var dots = AQ_SERIES.map(function (s) {
+      var c = el("circle", { r: 4, fill: s.color, stroke: "#161C23", "stroke-width": 2, visibility: "hidden" });
+      asvg.appendChild(c);
+      return c;
+    });
+    var hit = el("rect", { x: aL - step / 2, y: aT, width: pw + step, height: ph, fill: "transparent" });
+    asvg.appendChild(hit);
+    aqBox.appendChild(asvg);
+
+    var current = -1;
+    function showAt(i) {
+      current = i;
+      var row = AQ_MONTHLY[i];
+      var x = ax(i);
+      cross.setAttribute("x1", x); cross.setAttribute("x2", x);
+      cross.setAttribute("visibility", "visible");
+      dots.forEach(function (c, si) {
+        c.setAttribute("cx", x); c.setAttribute("cy", ay(row[si + 1]));
+        c.setAttribute("visibility", "visible");
+      });
+
+      aqTip.textContent = "";
+      var head = document.createElement("div");
+      head.className = "aq-tip-month";
+      head.textContent = monthLabel(row[0]) + (i === n - 1 ? " (partial)" : "");
+      aqTip.appendChild(head);
+      AQ_SERIES.map(function (s, si) { return { s: s, v: row[si + 1] }; })
+        .sort(function (a, b) { return b.v - a.v; })
+        .forEach(function (r) {
+          var line = document.createElement("div");
+          line.className = "aq-tip-row";
+          var k = document.createElement("span"); k.className = "k"; k.style.background = r.s.color;
+          var nm = document.createElement("span"); nm.className = "n"; nm.textContent = r.s.name;
+          var v = document.createElement("span"); v.className = "v"; v.textContent = r.v.toFixed(1);
+          line.appendChild(k); line.appendChild(nm); line.appendChild(v);
+          aqTip.appendChild(line);
+        });
+      aqTip.hidden = false;
+
+      var card = aqBox.parentNode;
+      var cardRect = card.getBoundingClientRect();
+      var boxRect = aqBox.getBoundingClientRect();
+      var svgRect = asvg.getBoundingClientRect();
+      var px = svgRect.left - cardRect.left + (x / AW) * svgRect.width;
+      var tipW = aqTip.offsetWidth;
+      var left = px + 14;
+      if (left + tipW > cardRect.width - 8) left = px - tipW - 14;
+      aqTip.style.left = Math.max(8, left) + "px";
+      aqTip.style.top = (boxRect.top - cardRect.top + 8) + "px";
+    }
+    function hideAq() {
+      current = -1;
+      aqTip.hidden = true;
+      cross.setAttribute("visibility", "hidden");
+      dots.forEach(function (c) { c.setAttribute("visibility", "hidden"); });
+    }
+    function indexFromEvent(ev) {
+      var r = asvg.getBoundingClientRect();
+      var x = (ev.clientX - r.left) / r.width * AW;
+      return Math.max(0, Math.min(n - 1, Math.round((x - aL) / step)));
+    }
+    hit.addEventListener("pointermove", function (ev) { showAt(indexFromEvent(ev)); });
+    hit.addEventListener("pointerdown", function (ev) { showAt(indexFromEvent(ev)); });
+    aqBox.addEventListener("pointerleave", hideAq);
+    aqBox.addEventListener("focus", function () { showAt(current >= 0 ? current : n - 1); });
+    aqBox.addEventListener("blur", hideAq);
+    aqBox.addEventListener("keydown", function (ev) {
+      if (ev.key === "ArrowLeft" || ev.key === "ArrowRight" || ev.key === "Home" || ev.key === "End") {
+        ev.preventDefault();
+        var i = current < 0 ? n - 1 : current;
+        if (ev.key === "ArrowLeft") i = Math.max(0, i - 1);
+        if (ev.key === "ArrowRight") i = Math.min(n - 1, i + 1);
+        if (ev.key === "Home") i = 0;
+        if (ev.key === "End") i = n - 1;
+        showAt(i);
+      } else if (ev.key === "Escape") {
+        hideAq();
+      }
+    });
+
+    // legend (line keys) + smog season swatch
+    var legend = document.getElementById("aqLegend");
+    AQ_SERIES.forEach(function (s) {
+      var item = document.createElement("span");
+      var k = document.createElement("i"); k.className = "aq-key"; k.style.background = s.color;
+      item.appendChild(k);
+      item.appendChild(document.createTextNode(s.name));
+      legend.appendChild(item);
+    });
+    var bandItem = document.createElement("span");
+    var bk = document.createElement("i"); bk.className = "aq-key-band";
+    bandItem.appendChild(bk);
+    bandItem.appendChild(document.createTextNode("smog season"));
+    legend.appendChild(bandItem);
+
+    // table view
+    var table = document.getElementById("aqTable");
+    var thead = document.createElement("thead");
+    var hr = document.createElement("tr");
+    ["Month"].concat(AQ_SERIES.map(function (s) { return s.name; })).forEach(function (h) {
+      var th = document.createElement("th"); th.textContent = h; hr.appendChild(th);
+    });
+    thead.appendChild(hr); table.appendChild(thead);
+    var tbody = document.createElement("tbody");
+    AQ_MONTHLY.forEach(function (row, i) {
+      var tr = document.createElement("tr");
+      var td0 = document.createElement("td");
+      td0.textContent = monthLabel(row[0]) + (i === n - 1 ? " (partial)" : "");
+      tr.appendChild(td0);
+      for (var c = 1; c <= AQ_SERIES.length; c++) {
+        var td = document.createElement("td"); td.textContent = row[c].toFixed(1); tr.appendChild(td);
+      }
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
   }
 })();
 </script>
